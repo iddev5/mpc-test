@@ -1,0 +1,26 @@
+preproc : '#' /.+/;
+
+ident   : /[a-zA-Z_][a-zA-Z0-9_]*/;
+num     : /[0-9]+/;
+string  : /\"(\\\\.|[^\"])*\"/;
+char    : /\'.\'/;
+
+factor  : '(' <lval> ')'
+        | <num>
+        | <string>
+        | <char>
+        | <ident> '(' <lval>? (',' <lval>)* ')'
+        | <ident> ;
+term    : <factor> (('*' | '/' | '%') <factor>)*;
+lval    : <term> (('+' | '-') <term>)*;
+
+decl    : <ident> <ident>;
+
+stmt    : '{' <stmt>* '}'
+        | <decl> ( '=' <lval> )? ';'
+        | <lval> ';';
+
+param   : <decl>? (',' <decl>)*;
+proc    : <decl> '(' <param> ')' <stmt>;
+
+prog    : /^/ <preproc>* <proc>* /$/;
