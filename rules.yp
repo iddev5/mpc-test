@@ -14,22 +14,25 @@ term    : <factor> (('*' | '/' | '%') <factor>)*;
 strfact : '(' <strval> ')'
         | <string>;
 
+strval  : <strfact> (("++" <strfact>) | ("**" <term>))*;
+
 nval    : <term> (('+' | '-') <term>)*;
 
-val     : <nval>
-        | <strfact> (("++" <strfact>) | ("**" <term>))*
-        | <func> ;
+val     : <func>
+        | <nval>
+        | <strval> ;
 
 expr    : <nval> ('>' | '<' | ">=" | "<=" | "==" | "!=") <nval>;
 
 param   : <ident> ':' <ident>;
-func    : '(' <param>? (',' <param>)* ')' '{' <body> '}';
+func    :  "fn" '(' <param>? (',' <param>)* ')' '{' <body> '}';
 
 let     : "let" "pub"? "const"? <ident> ((':' <ident>)? '=' <val>)? ';';
 if      : "if" <expr> <block>;
 while   : "while" <expr> <block>;
+switch  : "switch" <ident> '{' ("case" <val> "=>" <block>)* ("else" "=>" <block>) '}';
 
 block   : (('{' <body> '}')? | <body>);
-body    : <let>* <if>* <while>* (<val> ';')*;
+body    : <let>* <if>* <while>* <switch>* (<val> ';')*;
 
 prog    : /^/ <let>* /$/;

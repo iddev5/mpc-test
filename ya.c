@@ -10,6 +10,7 @@ int main() {
     mpc_parser_t *cchar = mpc_new("char");
     mpc_parser_t *factor = mpc_new("factor");
     mpc_parser_t *strfact = mpc_new("strfact");
+    mpc_parser_t *strval = mpc_new("strval");
     mpc_parser_t *term = mpc_new("term");
     mpc_parser_t *param = mpc_new("param");
     mpc_parser_t *func = mpc_new("func");
@@ -19,6 +20,7 @@ int main() {
     mpc_parser_t *let = mpc_new("let");
     mpc_parser_t *iif = mpc_new("if");
     mpc_parser_t *wwhile = mpc_new("while");
+    mpc_parser_t *sswitch = mpc_new("switch");
     mpc_parser_t *block = mpc_new("block");
     mpc_parser_t *body = mpc_new("body");
     mpc_parser_t *prog = mpc_new("prog");
@@ -35,7 +37,7 @@ int main() {
     fclose(f);
 
     mpc_err_t *err = mpca_lang(MPCA_LANG_DEFAULT, grammar,
-        ident, num, string, cchar, factor, strfact, term, param, func, nval, val, expr, let, iif, wwhile, block, body, prog, NULL
+        ident, num, string, cchar, factor, strfact, strval, term, param, func, nval, val, expr, let, iif, wwhile, sswitch, block, body, prog, NULL
     );
 
     if (err != NULL) {
@@ -47,9 +49,9 @@ int main() {
     mpc_result_t res;
 
     char str[] =
-    "let x = () {\n"
-    "   while x == true { \n"
-    "       print(\"hello\" ** (10 + 2));\n"
+    "let x = fn (y: int) {\n"
+    "   switch x { \n"
+    "       else => { 20; }\n"
     "   }\n"
     "};";
 
@@ -62,6 +64,6 @@ int main() {
         mpc_err_delete(res.error);
     }
 
-    mpc_cleanup(6, ident, num, string, cchar, factor, strfact, term, param, func, nval, val, expr, let, iif, wwhile, block, body, prog);
+    mpc_cleanup(6, ident, num, string, cchar, factor, strfact, strval, term, param, func, nval, val, expr, let, iif, wwhile, sswitch, block, body, prog);
     free(grammar);
 }
