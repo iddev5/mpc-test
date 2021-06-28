@@ -8,31 +8,26 @@ factor  : '(' <nval> ')'
         | <char>
         | <ident> '(' <val>? (',' <val>)* ')'
         | <ident> ;
-
 term    : <factor> (('*' | '/' | '%') <factor>)*;
+nval    : <term> (('+' | '-') <term>)*;
+expr    : <nval> ('>' | '<' | ">=" | "<=" | "==" | "!=") <nval>;
 
 strfact : '(' <strval> ')'
         | <string>;
-
 strval  : <strfact> (("++" <strfact>) | ("**" <term>))*;
 
-nval    : <term> (('+' | '-') <term>)*;
-
-val     : <func>
-        | <nval>
+val     : <nval>
         | <strval> ;
 
-expr    : <nval> ('>' | '<' | ">=" | "<=" | "==" | "!=") <nval>;
-
 param   : <ident> ':' <ident>;
-func    :  "fn" '(' <param>? (',' <param>)* ')' '{' <body> '}';
 
+func    : "func" <ident> '(' <param>? (',' <param>)* ')' <ident> '{' <body> '}';
 let     : "let" "pub"? "const"? <ident> ((':' <ident>)? '=' <val>)? ';';
 if      : "if" <expr> <block>;
 while   : "while" <expr> <block>;
 switch  : "switch" <ident> '{' ("case" <val> "=>" <block>)* ("else" "=>" <block>) '}';
 
 block   : (('{' <body> '}')? | <body>);
-body    : <let>* <if>* <while>* <switch>* (<val> ';')*;
+body    : <func>* <let>* <if>* <while>* <switch>* (<val> ';')*;
 
-prog    : /^/ <let>* /$/;
+prog    : /^/ <func>* /$/;

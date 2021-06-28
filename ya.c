@@ -49,11 +49,11 @@ int main() {
     mpc_result_t res;
 
     char str[] =
-    "let x = fn (y: int) {\n"
+    "func x(y: int) int {\n"
     "   switch x { \n"
     "       else => { 20; }\n"
     "   }\n"
-    "};";
+    "}";
 
     if (mpc_parse("input", str, prog, &res)) {
         mpc_ast_print(res.output);
